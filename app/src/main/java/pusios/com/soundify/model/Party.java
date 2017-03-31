@@ -1,23 +1,19 @@
 package pusios.com.soundify.model;
 
-import android.os.Parcelable;
-
-import com.google.auto.value.AutoValue;
-
 import java.util.List;
 
-@AutoValue
-public abstract class Party extends Category implements Parcelable {
+public class Party extends Catalog {
 
-    public abstract String name();
+    private final String name;
+    private final String color;
 
-    public abstract String color();
-
-    public static Party create(final int id,
-                               final String name,
-                               final String color,
-                               final List<Category> categories,
-                               final List<Clip> clips) {
-        return new AutoValue_Party(id, categories, clips, name, color);
+    public Party(final int id,
+                 final String name,
+                 final String color,
+                 final List<Catalog> subCatalog,
+                 final List<Clip> clips) {
+        super(id, subCatalog, clips);
+        this.name = name;
+        this.color = color;
     }
 }
