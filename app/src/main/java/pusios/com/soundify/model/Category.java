@@ -1,13 +1,11 @@
 package pusios.com.soundify.model;
 
-import android.os.Parcelable;
+import java.util.List;
+public abstract class Category {
 
-import com.google.auto.value.AutoValue;
+    public abstract int id();
 
-@AutoValue
-public abstract class Category implements Parcelable {
-    public abstract String id();
-    public static Category create(final String id){
-        return new AutoValue_Category(id);
-    }
+    public abstract List<Category> subCategories();
+
+    public abstract List<Clip> clips();
 }
