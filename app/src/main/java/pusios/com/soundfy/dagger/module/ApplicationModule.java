@@ -11,8 +11,15 @@ import com.google.gson.GsonBuilder;
 
 import javax.inject.Singleton;
 
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import pusios.com.soundfy.R;
 import pusios.com.soundfy.db.DbBuilder;
 import pusios.com.soundfy.db.RuntimeTypeAdapterFactory;
@@ -68,5 +75,13 @@ public class ApplicationModule {
             sharedPreferences.edit().putString("db", db).commit();
         }
         return gson.fromJson(db, Catalog.class);
+    }
+
+    @Provides
+    @Singleton
+    Observable<Catalog> provideObservableCatalog(final Lazy<Catalog> catalog) {
+        return Observable.fromCallable(() -> catalog.get())
+                         .subscribeOn(Schedulers.computation())
+                         .observeOn(AndroidSchedulers.mainThread());
     }
 }
