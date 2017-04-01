@@ -1,9 +1,9 @@
-package pusios.com.soundify;
+package pusios.com.soundfy;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import pusios.com.soundify.db.DbGenerator;
+import pusios.com.soundfy.db.DbGenerator;
 
 public class MainActivity extends AppCompatActivity {
 

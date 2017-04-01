@@ -1,4 +1,4 @@
-package pusios.com.soundify.model;
+package pusios.com.soundfy.model;
 
 import java.util.List;
 

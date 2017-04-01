@@ -1,4 +1,4 @@
-package pusios.com.soundify;
+package pusios.com.soundfy;
 
 import org.junit.Test;
 

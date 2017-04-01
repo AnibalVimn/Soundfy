@@ -1,4 +1,4 @@
-package pusios.com.soundify.db;
+package pusios.com.soundfy.db;
 
 import android.util.Log;
 
@@ -8,10 +8,10 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-import pusios.com.soundify.model.Author;
-import pusios.com.soundify.model.Catalog;
-import pusios.com.soundify.model.Clip;
-import pusios.com.soundify.model.Party;
+import pusios.com.soundfy.model.Author;
+import pusios.com.soundfy.model.Catalog;
+import pusios.com.soundfy.model.Clip;
+import pusios.com.soundfy.model.Party;
 
 public class DbGenerator {
 

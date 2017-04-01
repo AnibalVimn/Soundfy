@@ -1,4 +1,4 @@
-package pusios.com.soundify;
+package pusios.com.soundfy;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

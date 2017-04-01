@@ -1,4 +1,4 @@
-package pusios.com.soundify.db;
+package pusios.com.soundfy.db;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
