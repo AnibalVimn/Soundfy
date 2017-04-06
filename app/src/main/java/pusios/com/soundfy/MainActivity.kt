@@ -26,19 +26,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        DaggerDependencies.injector!!.inject(this)
+        DaggerDependencies.injector.inject(this)
         subscriptions.add(observableCatalog.subscribe(this::setCatalog))
-
-        /*subscriptions.add(observableCatalog.subscribeWith(object : DisposableObserver<Catalog>() {
-            override fun onComplete() {
-            }
-
-            override fun onError(e: Throwable?) {
-            }
-
-            override fun onNext(value: Catalog?) {
-            }
-        }));*/
     }
 
     private fun setCatalog(catalog: Catalog) {
