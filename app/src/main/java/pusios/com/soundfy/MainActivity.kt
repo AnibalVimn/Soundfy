@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        DaggerDependencies.getInjector().inject(this)
+        DaggerDependencies.injector!!.inject(this)
         subscriptions.add(observableCatalog.subscribe(this::setCatalog))
 
         /*subscriptions.add(observableCatalog.subscribeWith(object : DisposableObserver<Catalog>() {
