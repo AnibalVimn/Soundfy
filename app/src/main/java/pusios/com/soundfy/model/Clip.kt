@@ -1,3 +1,3 @@
 package pusios.com.soundfy.model
 
-class Clip(private val id: String, private val title: String)
+data class Clip(val id: String, val title: String)
