@@ -15,7 +15,7 @@ class ClipViewHolder(view : View): GenericViewHolder<Clip, ClipsAdapterListener>
     }
 
     override fun bindItem(item: Clip, listener: ClipsAdapterListener) {
-        button.setText(item.title)
+        button.text = item.title
         button.setOnClickListener {listener.onClipClicked()}
     }
 }
