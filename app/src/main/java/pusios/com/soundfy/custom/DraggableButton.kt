@@ -9,18 +9,31 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.view.ViewConfiguration
 
 class DraggableButton: FrameLayout {
 
     private lateinit var button: Button
-
+    private var slop = 0
     private var lastX = 0f
+    private var downX = 0f
 
-    constructor(context: Context?) : this(context, null)
+    constructor(context: Context) : this(context, null) {
+        init(context)
+    }
 
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0) {
+        init(context)
+    }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context,
+            attrs, defStyleAttr) {
+        init(context)
+    }
+
+    private fun init(context: Context) {
+        slop = ViewConfiguration.get(context).scaledTouchSlop
+    }
 
     override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
         if (child is LinearLayout) {
@@ -37,6 +50,7 @@ class DraggableButton: FrameLayout {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_DOWN && hitButton(event)) {
             lastX = event.x
+            downX = event.x
             return false
         }
 
@@ -46,8 +60,10 @@ class DraggableButton: FrameLayout {
 
         when(event.action) {
             MotionEvent.ACTION_MOVE -> {
-                button.translationX += event.x - lastX
-                lastX = event.x
+                if (Math.abs(event.x - downX) > slop) {
+                    button.translationX += event.x - lastX
+                    lastX = event.x
+                }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 if (button.translationX != 0f) {
