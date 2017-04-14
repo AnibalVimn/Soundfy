@@ -74,8 +74,7 @@ class ApplicationModule(internal var application: Application) {
     @Provides
     @Singleton
     internal fun provideObservableCatalog(catalog: Lazy<Catalog>): Observable<Catalog> {
-        return Observable.fromCallable(FlowableFromCallable(
-                Callable { catalog.get() }))
+        return Observable.fromCallable{ catalog.get() }
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
     }

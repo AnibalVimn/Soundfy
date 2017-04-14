@@ -1,10 +1,11 @@
 package pusios.com.soundfy
 
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.widget.Toast
 
 import javax.inject.Inject
 
@@ -14,6 +15,7 @@ import pusios.com.soundfy.clips.ClipsAdapter
 import pusios.com.soundfy.clips.ClipsAdapterListener
 import pusios.com.soundfy.dagger.DaggerDependencies
 import pusios.com.soundfy.model.Catalog
+import pusios.com.soundfy.model.Clip
 
 class MainActivity : AppCompatActivity(), ClipsAdapterListener {
 
@@ -21,6 +23,7 @@ class MainActivity : AppCompatActivity(), ClipsAdapterListener {
     lateinit var observableCatalog: Observable<Catalog>
 
     lateinit var catalog: Catalog
+    lateinit var mediaPlayer: MediaPlayer
 
     private var subscriptions: CompositeDisposable = CompositeDisposable();
 
@@ -40,8 +43,11 @@ class MainActivity : AppCompatActivity(), ClipsAdapterListener {
         clipsList.adapter = ClipsAdapter(catalog.clips, this)
     }
 
-    override fun onClipClicked() {
-        Toast.makeText(this, "hola", Toast.LENGTH_SHORT).show()
+    override fun onClipClicked(clip: Clip) {
+        mediaPlayer = MediaPlayer.create(this,
+                this.resources.getIdentifier(clip.id, "raw", this.packageName));
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.start();
     }
 
     override fun onDestroy() {
