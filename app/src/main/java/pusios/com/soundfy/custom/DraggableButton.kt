@@ -17,6 +17,7 @@ class DraggableButton: FrameLayout {
     private var slop = 0
     private var lastX = 0f
     private var downX = 0f
+    private var moving = false
 
     constructor(context: Context) : this(context, null) {
         init(context)
@@ -53,28 +54,45 @@ class DraggableButton: FrameLayout {
             downX = event.x
             return false
         }
-
         if (lastX == 0f) {
             return false
         }
-
-        when(event.action) {
-            MotionEvent.ACTION_MOVE -> {
-                if (Math.abs(event.x - downX) > slop) {
-                    button.translationX += event.x - lastX
-                    lastX = event.x
-                }
-            }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                if (button.translationX != 0f) {
-                    button.animate().translationX(0f)
-                    lastX = 0f
-                    return true
-                }
-            }
+        if (event.action == MotionEvent.ACTION_MOVE) {
+            tryToTranslateButton(event)
+        } else if ((event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL)
+                && button.translationX != 0f) {
+            reset()
+            return true
         }
-
         return false
+    }
+
+    private fun isUserSwiping(event: MotionEvent): Boolean {
+        return (Math.abs(event.x - downX) > slop || moving)
+    }
+
+    private fun isDistanceWithinLimits(distance: Float): Boolean {
+        val maxDistance = (width - button.width) / 2
+        return Math.abs(button.translationX + distance) in 0..maxDistance
+    }
+
+    private fun tryToTranslateButton(event: MotionEvent) {
+        val distance = event.x - lastX
+        if (isUserSwiping(event) && isDistanceWithinLimits(distance)) {
+            translateButton(distance, event.x)
+        }
+    }
+
+    private fun translateButton(distance: Float, x: Float) {
+        moving = true
+        button.translationX += distance
+        lastX = x
+    }
+
+    private fun reset() {
+        button.animate().translationX(0f)
+        lastX = 0f
+        moving = false
     }
 
     private fun hitButton(event: MotionEvent): Boolean {
