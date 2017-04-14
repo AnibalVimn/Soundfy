@@ -24,6 +24,12 @@ class DbBuilder {
         clips.add(Clip("wakeupdrunk", "Wake up"))
         clips.add(Clip("wtfgoinon", "WTF"))
 
+        clips.add(Clip("wtfgoinon", "Fake 1"))
+        clips.add(Clip("wtfgoinon", "Fake 2"))
+        clips.add(Clip("wtfgoinon", "Fake 3"))
+        clips.add(Clip("wtfgoinon", "Fake 4"))
+        clips.add(Clip("wtfgoinon", "Fake 5"))
+
         return Catalog(0, mutableListOf(), clips)
     }
 }

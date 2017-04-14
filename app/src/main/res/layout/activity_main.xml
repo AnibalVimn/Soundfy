@@ -8,9 +8,9 @@
     android:orientation="vertical"
     tools:context="pusios.com.soundfy.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
+    <pusios.com.soundfy.custom.DraggableItemsRecyclerView
         android:id="@+id/clips"
-        android:layout_width="368dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
 </LinearLayout>
