@@ -10,10 +10,12 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.view.ViewConfiguration
+import android.widget.Toast
 
 class DraggableButton: FrameLayout {
 
     private lateinit var button: Button
+    private lateinit var shareView: View
     private var slop = 0
     private var lastX = 0f
     private var downX = 0f
@@ -36,9 +38,11 @@ class DraggableButton: FrameLayout {
         slop = ViewConfiguration.get(context).scaledTouchSlop
     }
 
-    override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
+    override fun addView(child: View, params: ViewGroup.LayoutParams?) {
         if (child is LinearLayout) {
             button = child.getChildAt(0) as Button
+        } else if (child.id.equals(resources.getIdentifier("share", "id", context.packageName))) {
+            shareView = child
         }
         super.addView(child, params)
     }
@@ -61,10 +65,20 @@ class DraggableButton: FrameLayout {
             tryToTranslateButton(event)
         } else if ((event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL)
                 && button.translationX != 0f) {
+            checkIfShareHit()
             reset()
             return true
         }
         return false
+    }
+
+    private fun checkIfShareHit() {
+        val rightDraggableButton = (width + button.width) / 2
+        val currentRightDraggableButton = button.translationX + rightDraggableButton
+        val target = shareView.left + (shareView.width * 2 / 3)
+        if (target < currentRightDraggableButton) {
+            Toast.makeText(context, "HOLA", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun isUserSwiping(event: MotionEvent): Boolean {
