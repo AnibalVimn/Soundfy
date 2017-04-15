@@ -1,7 +1,5 @@
 package pusios.com.soundfy.custom
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
@@ -12,16 +10,6 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.view.ViewConfiguration
-import android.content.Intent
-import android.os.Environment
-import android.support.v4.app.ShareCompat
-import android.support.v4.content.FileProvider
-import pusios.com.soundfy.R
-import java.io.File
-import java.io.FileOutputStream
-import android.support.v4.app.ActivityCompat.requestPermissions
-import android.content.pm.PackageManager
-import android.os.Build
 
 class DraggableButton: FrameLayout {
 
@@ -31,6 +19,8 @@ class DraggableButton: FrameLayout {
     private var lastX = 0f
     private var downX = 0f
     private var moving = false
+
+    private lateinit var listener: Listener
 
     constructor(context: Context) : this(context, null) {
         init(context)
@@ -88,51 +78,8 @@ class DraggableButton: FrameLayout {
         val currentRightDraggableButton = button.translationX + rightDraggableButton
         val target = shareView.left + (shareView.width * 2 / 3)
         if (target < currentRightDraggableButton) {
-            shareAudio()
+            listener?.shareFunction.invoke()
         }
-    }
-
-    private fun shareAudio() {
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) !==
-                    PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(context as Activity, arrayOf<String>(Manifest.permission.WRITE_EXTERNAL_STORAGE), 2909)
-                return
-            }
-        }
-
-        val dest = Environment.getExternalStorageDirectory()
-        val inS = resources.openRawResource(R.raw.uglymf)
-
-        try {
-            val outS = FileOutputStream(File(dest, "sound.mp3"))
-            val buf = ByteArray(1024)
-            var len = inS.read(buf, 0, buf.size)
-            while (len != -1) {
-                outS.write(buf, 0, len)
-                len = inS.read(buf, 0, buf.size)
-            }
-            inS.close()
-            outS.close()
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        val uri = FileProvider.getUriForFile(context,
-                "pusios.com.soundfy",
-                File(Environment.getExternalStorageDirectory(), "sound.mp3"))
-
-        val intent = ShareCompat.IntentBuilder.from(context as Activity)
-                .setType("audio/*")
-                .setSubject("Subject")
-                .setStream(uri)
-                .setChooserTitle("title")
-                .createChooserIntent()
-                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        context.startActivity(intent)
     }
 
     private fun isUserSwiping(event: MotionEvent): Boolean {
@@ -169,5 +116,17 @@ class DraggableButton: FrameLayout {
         hitRect.left += (button.parent as View).left
         hitRect.right += (button.parent as View).left
         return hitRect.contains(event.x.toInt(), event.y.toInt())
+    }
+
+    fun setListener(shareFunction: () -> Unit, favoriteFunction: () -> Unit) {
+        listener = object: Listener {
+            override var shareFunction = shareFunction
+            override var favoriteFunction = favoriteFunction
+        }
+    }
+
+    interface Listener {
+        var shareFunction: () -> Unit
+        var favoriteFunction: () -> Unit
     }
 }

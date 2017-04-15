@@ -5,4 +5,6 @@ import pusios.com.soundfy.model.Clip
 interface ClipsAdapterListener {
 
     fun onClipClicked(clip: Clip)
+
+    fun onShareClip(clip: Clip)
 }

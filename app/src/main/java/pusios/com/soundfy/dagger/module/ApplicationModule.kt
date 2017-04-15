@@ -23,6 +23,7 @@ import io.reactivex.schedulers.Schedulers
 import pusios.com.soundfy.R
 import pusios.com.soundfy.db.DbBuilder
 import pusios.com.soundfy.db.RuntimeTypeAdapterFactory
+import pusios.com.soundfy.manager.ShareManager
 import pusios.com.soundfy.model.Author
 import pusios.com.soundfy.model.Catalog
 import pusios.com.soundfy.model.Party
@@ -38,16 +39,13 @@ class ApplicationModule(internal var application: Application) {
 
     @Provides
     @Singleton
-    internal fun provideResources(context: Context): Resources {
-        return context.resources
-    }
+    internal fun provideResources(context: Context): Resources = context.resources
 
     @Provides
     @Singleton
-    internal fun provideSharedPreferences(context: Context, resources: Resources): SharedPreferences {
-        return context.getSharedPreferences(resources.getString(R.string.app_name),
+    internal fun provideSharedPreferences(context: Context, resources: Resources):
+            SharedPreferences = context.getSharedPreferences(resources.getString(R.string.app_name),
                 Context.MODE_PRIVATE)
-    }
 
     @Provides
     @Singleton
@@ -73,9 +71,13 @@ class ApplicationModule(internal var application: Application) {
 
     @Provides
     @Singleton
-    internal fun provideObservableCatalog(catalog: Lazy<Catalog>): Observable<Catalog> {
-        return Observable.fromCallable{ catalog.get() }
+    internal fun provideObservableCatalog(catalog: Lazy<Catalog>): Observable<Catalog> =
+            Observable.fromCallable{ catalog.get() }
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-    }
+
+    @Provides
+    @Singleton
+    internal fun provideShareManager(context: Context, resources: Resources): ShareManager
+            = ShareManager(context, resources)
 }
