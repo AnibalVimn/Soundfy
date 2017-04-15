@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity(), ClipsAdapterListener {
 
     override fun onClipClicked(clip: Clip) {
         mediaPlayer = MediaPlayer.create(this,
-                this.resources.getIdentifier(clip.id, "raw", this.packageName));
+                this.resources.getIdentifier(clip.id, "raw", this.packageName))
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.start();
     }

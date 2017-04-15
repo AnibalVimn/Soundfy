@@ -1,5 +1,7 @@
 package pusios.com.soundfy.custom
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
@@ -10,7 +12,16 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.view.ViewConfiguration
-import android.widget.Toast
+import android.content.Intent
+import android.os.Environment
+import android.support.v4.app.ShareCompat
+import android.support.v4.content.FileProvider
+import pusios.com.soundfy.R
+import java.io.File
+import java.io.FileOutputStream
+import android.support.v4.app.ActivityCompat.requestPermissions
+import android.content.pm.PackageManager
+import android.os.Build
 
 class DraggableButton: FrameLayout {
 
@@ -77,8 +88,51 @@ class DraggableButton: FrameLayout {
         val currentRightDraggableButton = button.translationX + rightDraggableButton
         val target = shareView.left + (shareView.width * 2 / 3)
         if (target < currentRightDraggableButton) {
-            Toast.makeText(context, "HOLA", Toast.LENGTH_SHORT).show()
+            shareAudio()
         }
+    }
+
+    private fun shareAudio() {
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) !==
+                    PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(context as Activity, arrayOf<String>(Manifest.permission.WRITE_EXTERNAL_STORAGE), 2909)
+                return
+            }
+        }
+
+        val dest = Environment.getExternalStorageDirectory()
+        val inS = resources.openRawResource(R.raw.uglymf)
+
+        try {
+            val outS = FileOutputStream(File(dest, "sound.mp3"))
+            val buf = ByteArray(1024)
+            var len = inS.read(buf, 0, buf.size)
+            while (len != -1) {
+                outS.write(buf, 0, len)
+                len = inS.read(buf, 0, buf.size)
+            }
+            inS.close()
+            outS.close()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        val uri = FileProvider.getUriForFile(context,
+                "pusios.com.soundfy",
+                File(Environment.getExternalStorageDirectory(), "sound.mp3"))
+
+        val intent = ShareCompat.IntentBuilder.from(context as Activity)
+                .setType("audio/*")
+                .setSubject("Subject")
+                .setStream(uri)
+                .setChooserTitle("title")
+                .createChooserIntent()
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        context.startActivity(intent)
     }
 
     private fun isUserSwiping(event: MotionEvent): Boolean {
