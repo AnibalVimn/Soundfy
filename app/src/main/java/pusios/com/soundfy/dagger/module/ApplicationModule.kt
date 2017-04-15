@@ -23,6 +23,7 @@ import io.reactivex.schedulers.Schedulers
 import pusios.com.soundfy.R
 import pusios.com.soundfy.db.DbBuilder
 import pusios.com.soundfy.db.RuntimeTypeAdapterFactory
+import pusios.com.soundfy.manager.AudioClipManager
 import pusios.com.soundfy.manager.ShareManager
 import pusios.com.soundfy.model.Author
 import pusios.com.soundfy.model.Catalog
@@ -80,4 +81,8 @@ class ApplicationModule(internal var application: Application) {
     @Singleton
     internal fun provideShareManager(context: Context, resources: Resources): ShareManager
             = ShareManager(context, resources)
+
+    @Provides
+    @Singleton
+    internal fun provideAudioManager(resources: Resources): AudioClipManager = AudioClipManager(resources)
 }

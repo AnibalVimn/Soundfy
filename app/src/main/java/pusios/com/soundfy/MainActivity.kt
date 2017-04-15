@@ -21,6 +21,7 @@ import io.reactivex.disposables.CompositeDisposable
 import pusios.com.soundfy.clips.ClipsAdapter
 import pusios.com.soundfy.clips.ClipsAdapterListener
 import pusios.com.soundfy.dagger.DaggerDependencies
+import pusios.com.soundfy.manager.AudioClipManager
 import pusios.com.soundfy.manager.ShareManager
 import pusios.com.soundfy.model.Catalog
 import pusios.com.soundfy.model.Clip
@@ -34,9 +35,10 @@ class MainActivity : AppCompatActivity(), ClipsAdapterListener {
     lateinit var observableCatalog: Observable<Catalog>
     @Inject
     lateinit var shareManager: ShareManager
+    @Inject
+    lateinit var audioManager: AudioClipManager
 
     lateinit var catalog: Catalog
-    lateinit var mediaPlayer: MediaPlayer
     lateinit var lastClip: Clip
 
     private var subscriptions: CompositeDisposable = CompositeDisposable();
@@ -59,10 +61,7 @@ class MainActivity : AppCompatActivity(), ClipsAdapterListener {
 
     override fun onClipClicked(clip: Clip) {
         lastClip = clip
-        mediaPlayer = MediaPlayer.create(this,
-                this.resources.getIdentifier(clip.id, "raw", this.packageName))
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.start();
+        audioManager.playClip(clip.id, packageName)
     }
 
     override fun onShareClip(clip: Clip) {
